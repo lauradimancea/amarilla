@@ -13,9 +13,11 @@ import java.util.stream.Collectors;
 public class PersonService {
 
     private final PersonRepository personRepository;
+    private final CacheService cacheService;
 
-    public PersonService(PersonRepository personRepository) {
+    public PersonService(PersonRepository personRepository, CacheService cacheService) {
         this.personRepository = personRepository;
+        this.cacheService = cacheService;
     }
 
     public List<Person> getAllPeople() {
@@ -27,7 +29,7 @@ public class PersonService {
     }
 
     public List<Person> findPeopleByAddressAndSkillAndLanguage(String address, String skill, String language, int experience) {
-        return getAllPeople().stream()
+        return cacheService.findAllPeople().stream()
                 .filter(person -> person.getYearsExperience() >= experience)
                 .filter(person -> hasAddress(person, address))
                 .filter(person -> hasLanguage(person, language))
@@ -63,7 +65,7 @@ public class PersonService {
         if (skill == null) return true;
 
         return person.getPrimarySkill() != null && person.getPrimarySkill().equalsIgnoreCase(skill)
-                || person.getSkills() != null && person.getSkills().contains(skill.toLowerCase());
+                || person.getSkills() != null && person.getSkills().toLowerCase().contains(skill.toLowerCase());
     }
 
     private boolean hasAddress(Person person, String address) {
@@ -77,6 +79,6 @@ public class PersonService {
 
         if (language == null) return true;
 
-        return person.getLanguage() != null && person.getLanguage().equalsIgnoreCase(language);
+        return person.getLanguage() != null && person.getLanguage().toLowerCase().contains(language.toLowerCase());
     }
 }
