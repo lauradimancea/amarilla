@@ -34,6 +34,10 @@ public class Person {
 
     private String salary;
 
+    private String language;
+
+    private int yearsExperience;
+
     private String legalForm;
 
     private String mobility;

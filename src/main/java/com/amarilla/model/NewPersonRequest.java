@@ -32,4 +32,8 @@ public class NewPersonRequest {
 
     private String source;
 
+    private String language;
+
+    private int yearsExperience;
+
 }

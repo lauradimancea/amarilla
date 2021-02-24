@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PersonService {
@@ -25,6 +26,15 @@ public class PersonService {
         return personRepository.findById(id);
     }
 
+    public List<Person> findPeopleByAddressAndSkillAndLanguage(String address, String skill, String language, int experience) {
+        return getAllPeople().stream()
+                .filter(person -> person.getYearsExperience() >= experience)
+                .filter(person -> hasAddress(person, address))
+                .filter(person -> hasLanguage(person, language))
+                .filter(person -> hasSkill(person, skill))
+                .collect(Collectors.toList());
+    }
+
     public Person addPerson(NewPersonRequest newPersonRequest) {
         Person personToAdd = Person.builder()
                 .name(newPersonRequest.getName())
@@ -38,11 +48,35 @@ public class PersonService {
                 .skills(newPersonRequest.getSkills())
                 .notes(newPersonRequest.getNotes())
                 .source(newPersonRequest.getSource())
+                .language(newPersonRequest.getLanguage())
+                .yearsExperience(newPersonRequest.getYearsExperience())
                 .build();
         return personRepository.save(personToAdd);
     }
 
     public void deletePerson(int id) {
         personRepository.deleteById(id);
+    }
+
+    private boolean hasSkill(Person person, String skill) {
+
+        if (skill == null) return true;
+
+        return person.getPrimarySkill() != null && person.getPrimarySkill().equalsIgnoreCase(skill)
+                || person.getSkills() != null && person.getSkills().contains(skill.toLowerCase());
+    }
+
+    private boolean hasAddress(Person person, String address) {
+
+        if (address == null) return true;
+
+        return person.getAddress() != null && person.getAddress().equalsIgnoreCase(address);
+    }
+
+    private boolean hasLanguage(Person person, String language) {
+
+        if (language == null) return true;
+
+        return person.getLanguage() != null && person.getLanguage().equalsIgnoreCase(language);
     }
 }

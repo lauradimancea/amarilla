@@ -13,7 +13,6 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -35,11 +34,19 @@ public class PersonController {
         return ResponseEntity.ok(personService.getAllPeople());
     }
 
+    @GetMapping(path = "/people/skill", produces = MediaType.APPLICATION_JSON_VALUE)
+    public HttpEntity<List<Person>> getPeopleBySkill(@RequestParam(required = false) String skill,
+                                                     @RequestParam(required = false) String language,
+                                                     @RequestParam(required = false) String city,
+                                                     @RequestParam int yearsExperience) {
+
+        return ResponseEntity.ok(personService.findPeopleByAddressAndSkillAndLanguage(city, skill, language, yearsExperience));
+    }
+
     @GetMapping(path = "/person/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpEntity<Person> getPerson(@PathVariable int id) {
 
-        Optional<Person> personOptional = personService.getPerson(id);
-        return personOptional.map(ResponseEntity::ok)
+        return personService.getPerson(id).map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
