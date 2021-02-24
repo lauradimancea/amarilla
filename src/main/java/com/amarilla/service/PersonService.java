@@ -4,7 +4,7 @@ import com.amarilla.jpa.entity.Person;
 import com.amarilla.jpa.repository.PersonRepository;
 import com.amarilla.model.NewPersonRequest;
 import org.springframework.stereotype.Service;
-
+import org.apache.commons.lang3.StringUtils;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -62,7 +62,7 @@ public class PersonService {
 
     private boolean hasSkill(Person person, String skill) {
 
-        if (skill == null) return true;
+        if (StringUtils.isBlank(skill)) return true;
 
         return person.getPrimarySkill() != null && person.getPrimarySkill().equalsIgnoreCase(skill)
                 || person.getSkills() != null && person.getSkills().toLowerCase().contains(skill.toLowerCase());
@@ -70,14 +70,14 @@ public class PersonService {
 
     private boolean hasAddress(Person person, String address) {
 
-        if (address == null) return true;
+        if (StringUtils.isBlank(address)) return true;
 
         return person.getAddress() != null && person.getAddress().equalsIgnoreCase(address);
     }
 
     private boolean hasLanguage(Person person, String language) {
 
-        if (language == null) return true;
+        if (StringUtils.isBlank(language)) return true;
 
         return person.getLanguage() != null && person.getLanguage().toLowerCase().contains(language.toLowerCase());
     }
